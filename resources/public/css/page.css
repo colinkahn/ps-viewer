@@ -1,0 +1,92 @@
+html, body {
+  font-family: 'Inconsolata';
+  font-size: 13px;
+}
+
+.psGlobalHeader {
+  height: 30px;
+  line-height: 30px;
+  background-color: black;
+  color: white;
+  font-size: 15px;
+  padding: 0 1ex;
+}
+
+.psList {
+  
+}
+
+.psList__container {
+  height: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.psList__header,
+.psList__item {
+  line-height: 20px;
+  height: 20px;
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.psList__header {
+  font-weight: bold;
+  border-bottom: 1px dotted black;
+}
+
+.psList__header .psList__cell {
+  cursor: pointer;
+}
+
+.psSortable--down:after,
+.psSortable--up:after {
+  margin-left: .5ex;
+}
+
+.psSortable--down:after {
+  content: "\2193";
+}
+
+.psSortable--up:after {
+  content: "\2191";
+}
+
+.psList__item {
+  position: absolute;
+}
+
+.psList__item:nth-child(2n+1) {
+  background-color: rgb(241, 241, 241);
+}
+
+.psList__cell {
+  overflow: hidden;
+  display: block;
+  flex-basis: 0;
+  flex-grow: 1;
+}
+
+.psList__command {
+  flex-grow: 5;
+}
+
+.psActionBar {
+  border: 1px dotted black;
+  padding: 1ex;
+  border-top: none;
+}
+
+.psMonitorSingle {
+
+}
+
+.psMonitorSingle {
+  font-weight: 1.5em;
+}
+
+.psMonitorSingle__list dt {
+  font-weight: bold;
+}
