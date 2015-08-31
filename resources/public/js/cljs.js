@@ -49110,6 +49110,22 @@ ps_viewer.getters.ps_sort_column = colinkahn.flux.getters.getter.call(null, new 
 ps_viewer.getters.ps_sort_reversed = colinkahn.flux.getters.getter.call(null, new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "ps-ns", "ps-ns", -957452437), new cljs.core.Keyword(null, "sort-reversed", "sort-reversed", -567046087)], null));
 ps_viewer.getters.ps_search = colinkahn.flux.getters.getter.call(null, new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "ps-ns", "ps-ns", -957452437), new cljs.core.Keyword(null, "search", "search", 1564939822)], null));
 ps_viewer.getters.raw_ps_rows = colinkahn.flux.getters.getter.call(null, new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "ps-ns", "ps-ns", -957452437), new cljs.core.Keyword(null, "rows", "rows", 850049680)], null));
+ps_viewer.getters.raw_ps_groups = colinkahn.flux.getters.getter.call(null, new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "ps-ns", "ps-ns", -957452437), new cljs.core.Keyword(null, "groups", "groups", -136896102)], null));
+ps_viewer.getters.ps_open_groups = colinkahn.flux.getters.getter.call(null, new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "ps-ns", "ps-ns", -957452437), new cljs.core.Keyword(null, "open-groups", "open-groups", 1010222446)], null));
+ps_viewer.getters.ps_filter_ppid = colinkahn.flux.getters.getter.call(null, new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "ps-ns", "ps-ns", -957452437), new cljs.core.Keyword(null, "filter-ppid", "filter-ppid", 571096284)], null));
+ps_viewer.getters.compare_ints = function(a, b) {
+  return cljs.core.compare.call(null, a | 0, b | 0);
+};
+ps_viewer.getters.ps_groups = colinkahn.flux.getters.getter.call(null, function(a, b) {
+  return cljs.core.reduce.call(null, function(a, d) {
+    var e = cljs.core.nth.call(null, d, 0, null), f = cljs.core.nth.call(null, d, 1, null), e = cljs.core.name.call(null, e);
+    return cljs.core.assoc.call(null, a, e, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "open?", "open?", 1238443125), cljs.core.some.call(null, cljs.core.PersistentHashSet.fromArray([e], !0), b), new cljs.core.Keyword(null, "children", "children", -940561982), cljs.core.sort.call(null, ps_viewer.getters.compare_ints, f)], null));
+  }, cljs.core.PersistentArrayMap.EMPTY, a);
+}, ps_viewer.getters.raw_ps_groups, ps_viewer.getters.ps_open_groups);
+ps_viewer.getters.ps_filter_ppid_pids = colinkahn.flux.getters.getter.call(null, function(a, b) {
+  var c = cljs.core.get.call(null, b, a);
+  return cljs.core.truth_(c) ? (c = cljs.core.seq_QMARK_.call(null, c) ? cljs.core.apply.call(null, cljs.core.hash_map, c) : c, c = cljs.core.get.call(null, c, new cljs.core.Keyword(null, "children", "children", -940561982)), cljs.core.conj.call(null, c, a)) : null;
+}, ps_viewer.getters.ps_filter_ppid, ps_viewer.getters.ps_groups);
 ps_viewer.getters.converted_ps_rows = colinkahn.flux.getters.getter.call(null, function(a) {
   return cljs.core.map.call(null, function(a) {
     var c = cljs.core.seq_QMARK_.call(null, a) ? cljs.core.apply.call(null, cljs.core.hash_map, a) : a;
@@ -49125,22 +49141,35 @@ ps_viewer.getters.reverse_compare = function(a, b) {
 ps_viewer.getters.has_str_QMARK_ = function(a, b) {
   return cljs.core.not_EQ_.call(null, a.indexOf(b), -1);
 };
-ps_viewer.getters.ps_rows = colinkahn.flux.getters.getter.call(null, function(a, b, c, d) {
+ps_viewer.getters.ps_rows = colinkahn.flux.getters.getter.call(null, function(a, b, c, d, e) {
   d = clojure.string.lower_case.call(null, d);
-  return(cljs.core.empty_QMARK_.call(null, d) ? cljs.core.identity : function(a) {
-    return function(b) {
-      return cljs.core.filter.call(null, function(a) {
-        return function(b) {
-          return ps_viewer.getters.has_str_QMARK_.call(null, (new cljs.core.Keyword(null, "search-str", "search-str", -821246171)).cljs$core$IFn$_invoke$arity$1(b), a);
-        };
-      }(a), b);
+  var f = cljs.core.truth_(e) ? function(a) {
+    return function(a) {
+      return cljs.core.some.call(null, cljs.core.PersistentHashSet.fromArray([a], !0), e);
     };
-  }(d)).call(null, cljs.core.sort_by.call(null, function(a) {
+  }(d) : cljs.core.constantly.call(null, !0), g = cljs.core.empty_QMARK_.call(null, d) ? cljs.core.constantly.call(null, !0) : function(a, b) {
+    return function(b) {
+      return ps_viewer.getters.has_str_QMARK_.call(null, b, a);
+    };
+  }(d, f), h = function(a, b, c) {
+    return function(d) {
+      return cljs.core.filter.call(null, function(a, b, c) {
+        return function(a) {
+          var d = cljs.core.seq_QMARK_.call(null, a) ? cljs.core.apply.call(null, cljs.core.hash_map, a) : a;
+          a = cljs.core.get.call(null, d, new cljs.core.Keyword(null, "pid", "pid", 1018387698));
+          d = cljs.core.get.call(null, d, new cljs.core.Keyword(null, "search-str", "search-str", -821246171));
+          a = b.call(null, "" + cljs.core.str(a));
+          return cljs.core.truth_(a) ? c.call(null, d) : a;
+        };
+      }(a, b, c), d);
+    };
+  }(d, f, g);
+  return h.call(null, cljs.core.sort_by.call(null, function(a, c, d, e) {
     return function(a) {
       return cljs.core.get.call(null, a, b);
     };
-  }(d), cljs.core.truth_(c) ? ps_viewer.getters.reverse_compare : cljs.core.compare, a));
-}, ps_viewer.getters.converted_ps_rows, ps_viewer.getters.ps_sort_column, ps_viewer.getters.ps_sort_reversed, ps_viewer.getters.ps_search);
+  }(d, f, g, h), cljs.core.truth_(c) ? ps_viewer.getters.reverse_compare : cljs.core.compare, a));
+}, ps_viewer.getters.converted_ps_rows, ps_viewer.getters.ps_sort_column, ps_viewer.getters.ps_sort_reversed, ps_viewer.getters.ps_search, ps_viewer.getters.ps_filter_ppid_pids);
 ps_viewer.getters.ps_cols = colinkahn.flux.getters.getter.call(null, function(a) {
   return cljs.core.map.call(null, cljs.core.keyword, a);
 }, new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "ps-ns", "ps-ns", -957452437), new cljs.core.Keyword(null, "cols", "cols", -1914801295)], null));
@@ -49174,13 +49203,18 @@ colinkahn.flux.dispatcher.store_token_BANG_.call(null, new cljs.core.Keyword(nul
       case "scroll-ps-list":
         return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "scroll-top", "scroll-top", -46723100), (new cljs.core.Keyword(null, "event", "event", 301435442)).cljs$core$IFn$_invoke$arity$1(a).target.scrollTop], null);
       case "receive-raw-ps":
-        var b = (new cljs.core.Keyword(null, "raw-ps", "raw-ps", -941420689)).cljs$core$IFn$_invoke$arity$1(a), d = cljs.core.seq_QMARK_.call(null, b) ? cljs.core.apply.call(null, cljs.core.hash_map, b) : b, b = cljs.core.get.call(null, d, new cljs.core.Keyword(null, "rows", "rows", 850049680)), d = cljs.core.get.call(null, d, new cljs.core.Keyword(null, "cols", "cols", -1914801295));
-        return new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "rows", "rows", 850049680), b, new cljs.core.Keyword(null, "cols", "cols", -1914801295), d], null);
+        var b = (new cljs.core.Keyword(null, "raw-ps", "raw-ps", -941420689)).cljs$core$IFn$_invoke$arity$1(a), d = cljs.core.seq_QMARK_.call(null, b) ? cljs.core.apply.call(null, cljs.core.hash_map, b) : b, b = cljs.core.get.call(null, d, new cljs.core.Keyword(null, "rows", "rows", 850049680)), e = cljs.core.get.call(null, d, new cljs.core.Keyword(null, "cols", "cols", -1914801295)), d = cljs.core.get.call(null, d, new cljs.core.Keyword(null, "grps", "grps", 1034756461));
+        return new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "rows", "rows", 850049680), b, new cljs.core.Keyword(null, "cols", "cols", -1914801295), e, new cljs.core.Keyword(null, "groups", "groups", -136896102), d], null);
       case "ps-search-changed":
         return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "search", "search", 1564939822), (new cljs.core.Keyword(null, "event", "event", 301435442)).cljs$core$IFn$_invoke$arity$1(a).target.value], null);
       case "sort-scroll-ps-list":
-        var b = (new cljs.core.Keyword(null, "col", "col", -1959363084)).cljs$core$IFn$_invoke$arity$1(a), d = ps_viewer.getters.ps_sort_column.call(null, cljs.core.deref.call(null, ps_viewer.state.state)), e = ps_viewer.getters.ps_sort_reversed.call(null, cljs.core.deref.call(null, ps_viewer.state.state));
-        return cljs.core._EQ_.call(null, b, d) ? new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "sort-reversed", "sort-reversed", -567046087), cljs.core.not.call(null, e)], null) : new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "sort-column", "sort-column", -893300107), b, new cljs.core.Keyword(null, "sort-reversed", "sort-reversed", -567046087), !1], null);
+        return b = (new cljs.core.Keyword(null, "col", "col", -1959363084)).cljs$core$IFn$_invoke$arity$1(a), e = ps_viewer.getters.ps_sort_column.call(null, cljs.core.deref.call(null, ps_viewer.state.state)), d = ps_viewer.getters.ps_sort_reversed.call(null, cljs.core.deref.call(null, ps_viewer.state.state)), cljs.core._EQ_.call(null, b, e) ? new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "sort-reversed", "sort-reversed", -567046087), cljs.core.not.call(null, d)], null) : 
+        new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "sort-column", "sort-column", -893300107), b, new cljs.core.Keyword(null, "sort-reversed", "sort-reversed", -567046087), !1], null);
+      case "filter-by-ppid":
+        return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "filter-ppid", "filter-ppid", 571096284), (new cljs.core.Keyword(null, "ppid", "ppid", 215811440)).cljs$core$IFn$_invoke$arity$1(a)], null);
+      case "toggle-open-group":
+        return b = ps_viewer.getters.ps_open_groups.call(null, cljs.core.deref.call(null, ps_viewer.state.state)), e = (new cljs.core.Keyword(null, "pid", "pid", 1018387698)).cljs$core$IFn$_invoke$arity$1(a), new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "open-groups", "open-groups", 1010222446), cljs.core.truth_(cljs.core.some.call(null, cljs.core.PersistentHashSet.fromArray([e], !0), b)) ? cljs.core.remove.call(null, cljs.core.PersistentHashSet.fromArray([e], !0), b) : 
+        cljs.core.conj.call(null, b, e)], null);
       default:
         return null;
     }
@@ -51209,12 +51243,12 @@ cljs.core.PersistentVector.prototype.schema$core$Schema$walker$arity$1 = functio
         if (cljs.core.truth_(y)) {
           var x = y, G = cljs.core.nth.call(null, x, 0, null), K = cljs.core.nth.call(null, x, 1, null);
           if (cljs.core.empty_QMARK_.call(null, v)) {
-            return cljs.core.truth_(G.optional_QMARK_) ? w : f.call(null, w, schema.utils.error.call(null, schema.utils.make_ValidationError.call(null, cljs.core.vec.call(null, cljs.core.map.call(null, cljs.core.first, u)), null, new cljs.core.Delay(function(a, b, c, d, e, f, g, h, k, l, m, q, n, r, p) {
+            return cljs.core.truth_(G.optional_QMARK_) ? w : f.call(null, w, schema.utils.error.call(null, schema.utils.make_ValidationError.call(null, cljs.core.vec.call(null, cljs.core.map.call(null, cljs.core.first, u)), null, new cljs.core.Delay(function(a, b, c, d, e, f, g, h, k, l, m, q, n, p, r) {
               return function() {
                 return cljs.core.list_STAR_.call(null, new cljs.core.Symbol(null, "present?", "present?", -1810613791, null), function() {
-                  return function(a, b, c, d, e, f, g, h, k, l, m, q, n, r, p) {
+                  return function(a, b, c, d, e, f, g, h, k, l, m, q, n, p, r) {
                     return function aa(t) {
-                      return new cljs.core.LazySeq(null, function(a, b, c, d, e, f, g, h, k, l, m, q, n, r, p) {
+                      return new cljs.core.LazySeq(null, function(a, b, c, d, e, f, g, h, k, l, m, q, n, p, r) {
                         return function() {
                           for (;;) {
                             var a = cljs.core.seq.call(null, t);
@@ -51246,9 +51280,9 @@ cljs.core.PersistentVector.prototype.schema$core$Schema$walker$arity$1 = functio
                             return null;
                           }
                         };
-                      }(a, b, c, d, e, f, g, h, k, l, m, q, n, r, p), null, null);
+                      }(a, b, c, d, e, f, g, h, k, l, m, q, n, p, r), null, null);
                     };
-                  }(a, b, c, d, e, f, g, h, k, l, m, q, n, r, p).call(null, a);
+                  }(a, b, c, d, e, f, g, h, k, l, m, q, n, p, r).call(null, a);
                 }());
               };
             }(u, v, w, x, G, K, y, t, a, b, c, d, e, f, g), null), null)));
@@ -58923,6 +58957,59 @@ ps_viewer.client.scroll_list = function(a, b, c) {
     }.call(null, c);
   }()], null)], null);
 };
+ps_viewer.client.ps_tree_leaf = function ps_viewer$client$ps_tree_leaf(b, c, d, e, f) {
+  var g = [cljs.core.str(c), cljs.core.str(":"), cljs.core.str(b)].join("");
+  return new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "span", "span", 1394872991), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "on-click", "on-click", 1632826543), function(c) {
+    return function() {
+      return colinkahn.flux.dispatcher.dispatch.call(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "type", "type", 1174270348), "toggle-open-group", new cljs.core.Keyword(null, "pid", "pid", 1018387698), b], null));
+    };
+  }(g), new cljs.core.Keyword(null, "class", "class", -2030961996), cljs.core.truth_(d) ? cljs.core.truth_(e) ? "psTreeLeaf--open" : "psTreeLeaf--closed" : null], null), b], null), cljs.core.truth_(d) ? new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "button", "button", 1456579943), new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "on-click", "on-click", 1632826543), function(c) {
+    return function() {
+      return colinkahn.flux.dispatcher.dispatch.call(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "type", "type", 1174270348), "filter-by-ppid", new cljs.core.Keyword(null, "ppid", "ppid", 215811440), b], null));
+    };
+  }(g)], null), "\x3e"], null) : null, cljs.core.truth_(e) ? new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "ul.psTreeBranch", "ul.psTreeBranch", -124639046), function() {
+    return function(b) {
+      return function l(c) {
+        return new cljs.core.LazySeq(null, function(b) {
+          return function() {
+            for (;;) {
+              var d = cljs.core.seq.call(null, c);
+              if (d) {
+                if (cljs.core.chunked_seq_QMARK_.call(null, d)) {
+                  var e = cljs.core.chunk_first.call(null, d), g = cljs.core.count.call(null, e), h = cljs.core.chunk_buffer.call(null, g);
+                  return function() {
+                    for (var c = 0;;) {
+                      if (c < g) {
+                        var d = cljs.core._nth.call(null, e, c);
+                        cljs.core.chunk_append.call(null, h, function() {
+                          var c = cljs.core.get.call(null, f, d), e = cljs.core.seq_QMARK_.call(null, c) ? cljs.core.apply.call(null, cljs.core.hash_map, c) : c, c = cljs.core.get.call(null, e, new cljs.core.Keyword(null, "open?", "open?", 1238443125)), e = cljs.core.get.call(null, e, new cljs.core.Keyword(null, "children", "children", -940561982));
+                          return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "li", "li", 723558921), new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "key", "key", -1516042587), [cljs.core.str(b), cljs.core.str(":"), cljs.core.str(d)].join("")], null), new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [ps_viewer$client$ps_tree_leaf, d, b, e, c, f], null)], null);
+                        }());
+                        c += 1;
+                      } else {
+                        return!0;
+                      }
+                    }
+                  }() ? cljs.core.chunk_cons.call(null, cljs.core.chunk.call(null, h), l.call(null, cljs.core.chunk_rest.call(null, d))) : cljs.core.chunk_cons.call(null, cljs.core.chunk.call(null, h), null);
+                }
+                var u = cljs.core.first.call(null, d);
+                return cljs.core.cons.call(null, function() {
+                  var c = cljs.core.get.call(null, f, u), d = cljs.core.seq_QMARK_.call(null, c) ? cljs.core.apply.call(null, cljs.core.hash_map, c) : c, c = cljs.core.get.call(null, d, new cljs.core.Keyword(null, "open?", "open?", 1238443125)), d = cljs.core.get.call(null, d, new cljs.core.Keyword(null, "children", "children", -940561982));
+                  return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "li", "li", 723558921), new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "key", "key", -1516042587), [cljs.core.str(b), cljs.core.str(":"), cljs.core.str(u)].join("")], null), new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [ps_viewer$client$ps_tree_leaf, u, b, d, c, f], null)], null);
+                }(), l.call(null, cljs.core.rest.call(null, d)));
+              }
+              return null;
+            }
+          };
+        }(b), null, null);
+      };
+    }(g).call(null, d);
+  }()], null) : null], null);
+};
+ps_viewer.client.ps_tree = function(a) {
+  var b = cljs.core.get.call(null, a, "0"), c = cljs.core.seq_QMARK_.call(null, b) ? cljs.core.apply.call(null, cljs.core.hash_map, b) : b, b = cljs.core.get.call(null, c, new cljs.core.Keyword(null, "open?", "open?", 1238443125)), c = cljs.core.get.call(null, c, new cljs.core.Keyword(null, "children", "children", -940561982));
+  return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "ul.psTreeBranch", "ul.psTreeBranch", -124639046), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "li", "li", 723558921), new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [ps_viewer.client.ps_tree_leaf, "0", "tree", c, b, a], null)], null)], null);
+};
 ps_viewer.client.sort_classes = function(a, b, c) {
   return cljs.core._EQ_.call(null, a, b) ? cljs.core.truth_(c) ? "psSortable psSortable--up" : "psSortable psSortable--down" : "";
 };
@@ -58930,33 +59017,40 @@ ps_viewer.client.sort_col = function(a) {
   return colinkahn.flux.dispatcher.dispatch.call(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "type", "type", 1174270348), "sort-scroll-ps-list", new cljs.core.Keyword(null, "col", "col", -1959363084), a], null));
 };
 ps_viewer.client.monitor = function() {
-  var a = cljs.core.deref.call(null, ps_viewer.state.state), b = ps_viewer.getters.ps_rows.call(null, a), c = ps_viewer.getters.ps_cols.call(null, a), d = ps_viewer.getters.ps_sort_column.call(null, a), e = ps_viewer.getters.ps_sort_reversed.call(null, a), f = ps_viewer.getters.ps_search.call(null, a), g = ps_viewer.getters.ps_scroll_top.call(null, a), h = colinkahn.ui.scroll_list.positions.call(null, 300, 20, cljs.core.count.call(null, b), g);
-  return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psMonitor", "div.psMonitor", 933225817), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psActionBar", "div.psActionBar", -1821805091), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "input.psActionBar__search", "input.psActionBar__search", -1537161547), 
-  new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "on-change", "on-change", -732046149), function(a, b, c, d, e, f, g, h) {
+  var a = cljs.core.deref.call(null, ps_viewer.state.state), b = ps_viewer.getters.ps_rows.call(null, a), c = ps_viewer.getters.ps_cols.call(null, a), d = ps_viewer.getters.ps_sort_column.call(null, a), e = ps_viewer.getters.ps_sort_reversed.call(null, a), f = ps_viewer.getters.ps_search.call(null, a), g = ps_viewer.getters.ps_scroll_top.call(null, a), h = ps_viewer.getters.ps_groups.call(null, a), k = colinkahn.ui.scroll_list.positions.call(null, 300, 20, cljs.core.count.call(null, b), g), l = ps_viewer.getters.ps_filter_ppid.call(null, 
+  a);
+  return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psMonitor", "div.psMonitor", 933225817), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psActionBar", "div.psActionBar", -1821805091), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "input.psActionBar__search", "input.psActionBar__search", -1537161547), 
+  new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "on-change", "on-change", -732046149), function(a, b, c, d, e, f, g, h, k, l) {
     return function(a) {
       return colinkahn.flux.dispatcher.dispatch.call(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "type", "type", 1174270348), "ps-search-changed", new cljs.core.Keyword(null, "event", "event", 301435442), a], null));
     };
-  }(a, b, c, d, e, f, g, h), new cljs.core.Keyword(null, "value", "value", 305978217), f], null)], null)], null), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psList", "div.psList", -1758200565), new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psList__header", "div.psList__header", -1314896453), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, 
-  [new cljs.core.Keyword(null, "div.psList__cell", "div.psList__cell", 1308044877), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "class", "class", -2030961996), ps_viewer.client.sort_classes.call(null, new cljs.core.Keyword(null, "user", "user", 1532431356), d, e), new cljs.core.Keyword(null, "on-click", "on-click", 1632826543), function(a, b, c, d, e, f, g, h) {
+  }(a, b, c, d, e, f, g, h, k, l), new cljs.core.Keyword(null, "value", "value", 305978217), f, new cljs.core.Keyword(null, "placeholder", "placeholder", -104873083), "Filter"], null)], null), cljs.core.truth_(l) ? new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), [cljs.core.str("Filtering by pid "), cljs.core.str(l)].join(""), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, 
+  "button", "button", 1456579943), new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "on-click", "on-click", 1632826543), function(a, b, c, d, e, f, g, h, k, l) {
+    return function() {
+      return colinkahn.flux.dispatcher.dispatch.call(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "type", "type", 1174270348), "filter-by-ppid", new cljs.core.Keyword(null, "ppid", "ppid", 215811440), null], null));
+    };
+  }(a, b, c, d, e, f, g, h, k, l)], null), "cancel"], null)], null) : null], null), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psMonitor__body", "div.psMonitor__body", 1595654592), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psTree.psMonitor__tree", "div.psTree.psMonitor__tree", 1788246368), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, 
+  [ps_viewer.client.ps_tree, h], null)], null), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psList.psMonitor__list", "div.psList.psMonitor__list", -1404519010), new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psList__header", "div.psList__header", -1314896453), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, 
+  "div.psList__cell", "div.psList__cell", 1308044877), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "class", "class", -2030961996), ps_viewer.client.sort_classes.call(null, new cljs.core.Keyword(null, "user", "user", 1532431356), d, e), new cljs.core.Keyword(null, "on-click", "on-click", 1632826543), function(a, b, c, d, e, f, g, h, k, l) {
     return function() {
       return ps_viewer.client.sort_col.call(null, new cljs.core.Keyword(null, "user", "user", 1532431356));
     };
-  }(a, b, c, d, e, f, g, h)], null), "USER"], null), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psList__cell", "div.psList__cell", 1308044877), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "class", "class", -2030961996), ps_viewer.client.sort_classes.call(null, new cljs.core.Keyword(null, "pid", "pid", 1018387698), d, e), new cljs.core.Keyword(null, "on-click", "on-click", 1632826543), function(a, b, 
-  c, d, e, f, g, h) {
+  }(a, b, c, d, e, f, g, h, k, l)], null), "USER"], null), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psList__cell", "div.psList__cell", 1308044877), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "class", "class", -2030961996), ps_viewer.client.sort_classes.call(null, new cljs.core.Keyword(null, "pid", "pid", 1018387698), d, e), new cljs.core.Keyword(null, "on-click", "on-click", 1632826543), function(a, 
+  b, c, d, e, f, g, h, k, l) {
     return function() {
       return ps_viewer.client.sort_col.call(null, new cljs.core.Keyword(null, "pid", "pid", 1018387698));
     };
-  }(a, b, c, d, e, f, g, h)], null), "PID"], null), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psList__cell", "div.psList__cell", 1308044877), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "class", "class", -2030961996), ps_viewer.client.sort_classes.call(null, new cljs.core.Keyword(null, "%cpu", "%cpu", 630869868), d, e), new cljs.core.Keyword(null, "on-click", "on-click", 1632826543), function(a, b, 
-  c, d, e, f, g, h) {
+  }(a, b, c, d, e, f, g, h, k, l)], null), "PID"], null), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psList__cell", "div.psList__cell", 1308044877), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "class", "class", -2030961996), ps_viewer.client.sort_classes.call(null, new cljs.core.Keyword(null, "%cpu", "%cpu", 630869868), d, e), new cljs.core.Keyword(null, "on-click", "on-click", 1632826543), function(a, 
+  b, c, d, e, f, g, h, k, l) {
     return function() {
       return ps_viewer.client.sort_col.call(null, new cljs.core.Keyword(null, "%cpu", "%cpu", 630869868));
     };
-  }(a, b, c, d, e, f, g, h)], null), "%CPU"], null), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psList__cell.psList__command", "div.psList__cell.psList__command", 1106286818), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "class", "class", -2030961996), ps_viewer.client.sort_classes.call(null, new cljs.core.Keyword(null, "command", "command", -894540724), d, e), new cljs.core.Keyword(null, "on-click", 
-  "on-click", 1632826543), function(a, b, c, d, e, f, g, h) {
+  }(a, b, c, d, e, f, g, h, k, l)], null), "%CPU"], null), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div.psList__cell.psList__command", "div.psList__cell.psList__command", 1106286818), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "class", "class", -2030961996), ps_viewer.client.sort_classes.call(null, new cljs.core.Keyword(null, "command", "command", -894540724), d, e), new cljs.core.Keyword(null, "on-click", 
+  "on-click", 1632826543), function(a, b, c, d, e, f, g, h, k, l) {
     return function() {
       return ps_viewer.client.sort_col.call(null, new cljs.core.Keyword(null, "command", "command", -894540724));
     };
-  }(a, b, c, d, e, f, g, h)], null), "COMMAND"], null)], null), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [ps_viewer.client.scroll_list, c, b, h], null)], null)], null);
+  }(a, b, c, d, e, f, g, h, k, l)], null), "COMMAND"], null)], null), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [ps_viewer.client.scroll_list, c, b, k], null)], null)], null)], null);
 };
 ps_viewer.client.monitor_single = function() {
   var a = cljs.core.deref.call(null, ps_viewer.state.state);
@@ -58979,7 +59073,7 @@ ps_viewer.client.app = function() {
   null), cljs.core.get.call(null, b, a, new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [ps_viewer.client.monitor], null))], null);
 };
 reagent.core.render.call(null, new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [ps_viewer.client.app], null), document.getElementById("root"));
-var c__6488__auto___13935 = cljs.core.async.chan.call(null, 1);
+var c__6488__auto___18530 = cljs.core.async.chan.call(null, 1);
 cljs.core.async.impl.dispatch.run.call(null, function(a) {
   return function() {
     var b = function() {
@@ -59048,4 +59142,4 @@ cljs.core.async.impl.dispatch.run.call(null, function(a) {
     }();
     return cljs.core.async.impl.ioc_helpers.run_state_machine_wrapped.call(null, c);
   };
-}(c__6488__auto___13935));
+}(c__6488__auto___18530));

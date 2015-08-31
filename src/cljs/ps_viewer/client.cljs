@@ -29,6 +29,30 @@
         [:div.psList__cell {:key :%cpu} (:%cpu row)]
         [:div.psList__cell.psList__command {:key :command} (:command row)]]))]])
 
+(defn ps-tree-leaf [ppid base-key children open? groups]
+  (let [el-key (str base-key ":" ppid)]
+    [:div
+     [:span {:on-click #(dispatcher/dispatch {:type "toggle-open-group"
+                                                         :pid ppid})
+                        :class (when children
+                                 (if open?
+                                   "psTreeLeaf--open"
+                                   "psTreeLeaf--closed"))}
+      ppid]
+     (when children [:button {:on-click #(dispatcher/dispatch {:type "filter-by-ppid"
+                                                               :ppid ppid})} ">"])
+    (when open?
+      [:ul.psTreeBranch
+       (for [pid children]
+          (let [{open? :open? children :children} (get groups pid)]
+            [:li {:key (str el-key ":" pid)}
+              [ps-tree-leaf pid el-key children open? groups]]))])]))
+
+(defn ps-tree [groups]
+  (let [{open? :open? children :children} (get groups "0")]
+    [:ul.psTreeBranch
+     [:li [ps-tree-leaf "0" "tree" children open? groups]]]))
+
 (defn sort-classes [col by rev]
   (if (= col by)
     (if rev
@@ -48,32 +72,42 @@
         rev (gtr/ps-sort-reversed new-state)
         search (gtr/ps-search new-state)
         scroll-top (gtr/ps-scroll-top new-state)
-        positions (s/positions 300 20 (count rows) scroll-top)]
+        groups (gtr/ps-groups new-state)
+        positions (s/positions 300 20 (count rows) scroll-top)
+        filter-ppid (gtr/ps-filter-ppid new-state)]
     [:div.psMonitor
       [:div.psActionBar
        [:input.psActionBar__search
         {:on-change #(dispatcher/dispatch {:type "ps-search-changed"
                                            :event %})
-         :value search}]]
-      [:div.psList
-       [:div.psList__header
-        [:div.psList__cell
-        {:class (sort-classes :user srt rev)
-          :on-click #(sort-col :user)}
-        "USER"]
-        [:div.psList__cell
-        {:class (sort-classes :pid srt rev)
-          :on-click #(sort-col :pid)}
-        "PID"]
-        [:div.psList__cell
-        {:class (sort-classes :%cpu srt rev)
-          :on-click #(sort-col :%cpu)}
-        "%CPU"]
-        [:div.psList__cell.psList__command
-        {:class (sort-classes :command srt rev)
-          :on-click #(sort-col :command)}
-        "COMMAND"]]
-      [scroll-list cols rows positions]]]))
+         :value search
+         :placeholder "Filter"}]
+       (when filter-ppid [:div (str "Filtering by pid " filter-ppid)
+                          [:button {:on-click #(dispatcher/dispatch {:type "filter-by-ppid"
+                                                                     :ppid nil})}
+                           "cancel"]])]
+     [:div.psMonitor__body
+      [:div.psTree.psMonitor__tree
+       [ps-tree groups]]
+      [:div.psList.psMonitor__list
+        [:div.psList__header
+          [:div.psList__cell
+          {:class (sort-classes :user srt rev)
+            :on-click #(sort-col :user)}
+          "USER"]
+          [:div.psList__cell
+          {:class (sort-classes :pid srt rev)
+            :on-click #(sort-col :pid)}
+          "PID"]
+          [:div.psList__cell
+          {:class (sort-classes :%cpu srt rev)
+            :on-click #(sort-col :%cpu)}
+          "%CPU"]
+          [:div.psList__cell.psList__command
+          {:class (sort-classes :command srt rev)
+            :on-click #(sort-col :command)}
+          "COMMAND"]]
+        [scroll-list cols rows positions]]]]))
 
 (defn monitor-single []
   (let [new-state @state

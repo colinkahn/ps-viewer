@@ -1,6 +1,21 @@
-html, body {
+html, body, input, button {
   font-family: 'Inconsolata';
   font-size: 13px;
+}
+
+button:before {
+  content: "[";
+}
+
+button:after {
+  content: "]";
+}
+
+button {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
 }
 
 .psGlobalHeader {
@@ -12,9 +27,19 @@ html, body {
   padding: 0 1ex;
 }
 
-.psList {
-  
+.psMonitor__body {
+  display: flex;
 }
+
+  .psMonitor__list {
+    flex-grow: 1;
+  }
+
+  .psMonitor__tree {
+    width: 200px;
+    height: 320px;
+    overflow: scroll;
+  }
 
 .psList__container {
   height: 300px;
@@ -77,6 +102,8 @@ html, body {
   border: 1px dotted black;
   padding: 1ex;
   border-top: none;
+  display: flex;
+  justify-content: space-between;
 }
 
 .psMonitorSingle {
@@ -89,4 +116,26 @@ html, body {
 
 .psMonitorSingle__list dt {
   font-weight: bold;
+}
+.psTreeLeaf--open:before,
+.psTreeLeaf--closed:before {
+  font-size: 1.35ex;
+  width: 3ex;
+  display: inline-block;
+  vertical-align: .15ex;
+  margin-left: -1ex;
+}
+
+.psTreeLeaf--open:before {
+  content: "\25BC";
+}
+
+.psTreeLeaf--closed:before {
+  content: "\25B6";
+}
+
+.psTreeBranch {
+  padding-left: 10px;
+  border-left: 1px dotted black;
+  list-style: none;
 }
